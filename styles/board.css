@@ -1,0 +1,16 @@
+.board{
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.sqrw , .sqrb {
+  aspect-ratio: 1/1;
+}
+
+.sqrw{
+  background-color: white;
+}
+
+.sqrb{
+  background-color: black;
+}
