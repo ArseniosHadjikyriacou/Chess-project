@@ -3,14 +3,40 @@
   grid-template-columns: repeat(8, 1fr);
 }
 
+.sqr-corner1{
+  border-top-left-radius: 7px;
+}
+
+.sqr-corner2{
+  border-top-right-radius: 7px;
+}
+
+.sqr-corner3{
+  border-bottom-right-radius: 7px;
+}
+
+.sqr-corner4{
+  border-bottom-left-radius: 7px;
+}
+
 .sqrw , .sqrb {
   aspect-ratio: 1/1;
 }
 
 .sqrw{
-  background-color: white;
+  background-color: rgb(232, 220, 195);
+  transition-duration: 0.15s;
+}
+
+.sqrw:hover{
+  background-color: rgba(232, 220, 195, 0.8);
 }
 
 .sqrb{
-  background-color: black;
+  background-color: rgb(190, 150, 103);
+  transition-duration: 0.15s;
+}
+
+.sqrb:hover{
+  background-color: rgba(190, 150, 103, 0.8);
 }
