@@ -4,6 +4,7 @@ class Piece {
     this.type = type;
     this.oldPosition = oldPosition;
     this.newPosition = newPosition;
+    this.clickListener = () => clickOnPiece(this);
   }
 
   startingPosition() {
@@ -11,7 +12,7 @@ class Piece {
 
     sqrElement.innerHTML = `<img class="piece" src="pieces/${this.type}.svg">`
 
-    /* sqrElement.addEventListener('click',clickOnPiece) */
+    sqrElement.addEventListener('click',this.clickListener)
   };
 
   movePiece() {
@@ -21,8 +22,53 @@ class Piece {
     sqrElementOld.innerHTML = ""
     sqrElementNew.innerHTML = `<img class="piece" src="pieces/${this.type}.svg">`
 
-    /* sqrElementOld.removeEventListener('click',clickOnPiece) */
-    /* sqrElementNew.addEventListener('click',clickOnPiece) */
+    sqrElementOld.removeEventListener('click',this.clickListener)
+    sqrElementNew.addEventListener('click',this.clickListener)
   }
 
+}
+
+
+class Pawn extends Piece {
+  constructor(type, oldPosition, newPosition) {
+    super(type, oldPosition, newPosition);
+    this.hasMoved = 0;
+  }
+}
+
+
+class Rook extends Piece {
+  constructor(type, oldPosition, newPosition) {
+    super(type, oldPosition, newPosition);
+    this.hasMoved = 0;
+  }
+}
+
+
+class Knight extends Piece {
+  constructor(type, oldPosition, newPosition) {
+    super(type, oldPosition, newPosition);
+  }
+}
+
+
+class Bishop extends Piece {
+  constructor(type, oldPosition, newPosition) {
+    super(type, oldPosition, newPosition);
+  }
+}
+
+
+class Queen extends Piece {
+  constructor(type, oldPosition, newPosition) {
+    super(type, oldPosition, newPosition);
+  }
+}
+
+
+class King extends Piece {
+  constructor(type, oldPosition, newPosition) {
+    super(type, oldPosition, newPosition);
+    this.hasMoved = 0;
+  }
 }
