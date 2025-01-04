@@ -1,58 +1,24 @@
 const clickOnPiece = function (piece) {
-  switch (piece.type[0]) {
-    case "w":
+  if (piece.type[0] === turn) {
+      piece.findLegalMoves();
+    }
+}
 
-      console.log("white");
+const clickToMove = function (event,piece) {
+  piece.oldPosition = piece.newPosition;
+  piece.newPosition = event.target.id;
 
-      switch (piece.type[1]) {
-        case "P":
-          console.log("pawn");
-          break;
-        case "R":
-          console.log("rook");
-          break;
-        case "N":
-          console.log("knight");
-          break;
-        case "B":
-          console.log("bishop");
-          break;
-        case "Q":
-          console.log("queen");
-          break;
-        case "K":
-          console.log("king");
-          break;
-      }
-
-      break;
-
-    case "b":
-
-      console.log("black");
-
-      switch (piece.type[1]) {
-        case "P":
-          console.log("pawn");
-          break;
-        case "R":
-          console.log("rook");
-          break;
-        case "N":
-          console.log("knight");
-          break;
-        case "B":
-          console.log("bishop");
-          break;
-        case "Q":
-          console.log("queen");
-          break;
-        case "K":
-          console.log("king");
-          break;
-      }
-      
-      break;
-
+  const sqrElementOld = document.querySelector('.js-sqr'+coloredSqrs[0]);
+  sqrElementOld.classList.remove('js-sqrw-clicked','js-sqrb-clicked');
+ 
+  coloredSqrs[1].forEach( xy => {
+    const sqrElementLegal = document.querySelector('.js-sqr'+xy);
+    sqrElementLegal.removeEventListener('click',coloredSqrs[2]);
+    sqrElementLegal.classList.remove('js-sqrw-legal','js-sqrb-legal');
   }
+  );
+
+  coloredSqrs = [];
+
+  piece.movePiece()
 }

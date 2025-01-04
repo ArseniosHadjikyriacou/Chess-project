@@ -40,3 +40,19 @@
 .sqrb:hover{
   background-color: rgba(190, 150, 103, 0.8);
 }
+
+.js-sqrw-legal{
+  background-color: rgb(123, 222, 155);
+}
+
+.js-sqrb-legal{
+  background-color: rgb(20, 164, 65);
+}
+
+.js-sqrw-clicked{
+  background-color: rgb(236, 117, 117);
+}
+
+.js-sqrb-clicked{
+  background-color: rgb(190, 81, 81);
+}
