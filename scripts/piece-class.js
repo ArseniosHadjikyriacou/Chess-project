@@ -9,19 +9,27 @@ class Piece {
   }
 
   startingPosition() {
+    boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type;
+
     const sqrElement = document.querySelector('.js-sqr'+this.newPosition);
+    sqrElement.innerHTML = `<img class="piece" src="svg-pieces/${this.type}.svg">`
 
-    sqrElement.innerHTML = `<img class="piece" src="pieces/${this.type}.svg">`
-
-    sqrElement.addEventListener('click',this.clickOnPiece)
+    if (this.type[0] === turn) {
+      sqrElement.addEventListener('click',this.clickOnPiece);
+    }
+    
   }
 
   movePiece() {
+    boardState[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = 0;
+    boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type;
+    console.log(boardState);
+
     const sqrElementOld = document.querySelector('.js-sqr'+this.oldPosition);
     const sqrElementNew = document.querySelector('.js-sqr'+this.newPosition);
 
     sqrElementOld.innerHTML = ""
-    sqrElementNew.innerHTML = `<img class="piece" src="pieces/${this.type}.svg">`
+    sqrElementNew.innerHTML = `<img class="piece" src="svg-pieces/${this.type}.svg">`
 
     sqrElementOld.removeEventListener('click',this.clickOnPiece)
     sqrElementNew.addEventListener('click',this.clickOnPiece)
@@ -119,7 +127,7 @@ class Pawn extends Piece {
 
     let legalMoves = [];
     legalMoves.push(String(x)+String(y-1));
-    legalMoves.push(String(x)+String(y-2));
+    //legalMoves.push(String(x)+String(y-2));
 
     this.colorLegalSqrs(legalMoves);
     

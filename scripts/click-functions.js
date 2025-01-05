@@ -6,7 +6,7 @@ const clickOnPiece = function (piece) {
 
 const clickToMove = function (event,piece) {
   piece.oldPosition = piece.newPosition;
-  piece.newPosition = event.target.id;
+  piece.newPosition = event.currentTarget.id;
 
   const sqrElementOld = document.querySelector('.js-sqr'+coloredSqrs[0]);
   sqrElementOld.classList.remove('js-sqrw-clicked','js-sqrb-clicked');

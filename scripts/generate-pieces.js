@@ -1,4 +1,4 @@
-const wP1 = new Pawn("wP","05","05");
+const wP1 = new Pawn("wP","06","06");
 const wP2 = new Pawn("wP","16","16");
 const wP3 = new Pawn("wP","26","26");
 const wP4 = new Pawn("wP","36","36");
@@ -52,3 +52,5 @@ pieces.forEach( pieceObject => {
   pieceObject.startingPosition();
 }
 );
+
+console.log(boardState);

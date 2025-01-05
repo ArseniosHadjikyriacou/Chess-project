@@ -25,15 +25,15 @@ for (let y = 0; y < 8; y++) {
 }
 
 const corner1 = boardHTML.indexOf('00');
-boardHTML = boardHTML.slice(0,corner1+2) + ' sqr-corner1' + boardHTML.slice(corner1+2);
+boardHTML = boardHTML.slice(0,corner1+11) + 'sqr-corner1 ' + boardHTML.slice(corner1+11);
 
 const corner2 = boardHTML.indexOf('70');
-boardHTML = boardHTML.slice(0,corner2+2) + ' sqr-corner2' + boardHTML.slice(corner2+2);
+boardHTML = boardHTML.slice(0,corner2+11) + 'sqr-corner2 ' + boardHTML.slice(corner2+11);
 
 const corner3 = boardHTML.indexOf('77');
-boardHTML = boardHTML.slice(0,corner3+2) + ' sqr-corner3' + boardHTML.slice(corner3+2);
+boardHTML = boardHTML.slice(0,corner3+11) + 'sqr-corner3 ' + boardHTML.slice(corner3+11);
 
 const corner4 = boardHTML.indexOf('07');
-boardHTML = boardHTML.slice(0,corner4+2) + ' sqr-corner4' + boardHTML.slice(corner4+2);
+boardHTML = boardHTML.slice(0,corner4+11) + 'sqr-corner4 ' + boardHTML.slice(corner4+11);
 
 boardElement.innerHTML = boardHTML;

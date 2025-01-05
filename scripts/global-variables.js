@@ -1,5 +1,7 @@
 let turn = "w"
 
+let boardState = Array(8).fill().map(() => Array(8).fill(0));
+
 /* 
 coloredSqrs contains three elements:
 1) the position of the last piece that was clicked, 
