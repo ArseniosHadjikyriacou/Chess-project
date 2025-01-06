@@ -1,6 +1,7 @@
 let turn = "w"
 
-let boardState = Array(8).fill().map(() => Array(8).fill(0));
+let boardState = Array(8).fill().map(() => Array(8).fill('0'));
+let clickOnPieceFuns = Array(8).fill().map(() => Array(8).fill('0'));
 
 /* 
 coloredSqrs contains three elements:
