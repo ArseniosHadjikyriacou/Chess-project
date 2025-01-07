@@ -1,6 +1,7 @@
 let turn = "w"
 
 let boardState = Array(8).fill().map(() => Array(8).fill('0'));
+let pieceObjects = Array(8).fill().map(() => Array(8).fill('0'));
 let clickOnPieceFuns = Array(8).fill().map(() => Array(8).fill('0'));
 
 /* 

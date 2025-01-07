@@ -11,10 +11,11 @@ class Piece {
 
   startingPosition() {
     boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type;
+    pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])] = this;
     clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.clickOnPiece;
 
     const sqrElement = document.querySelector('.js-sqr'+this.newPosition);
-    sqrElement.innerHTML = `<img class="piece" src="svg-pieces/${this.type}.svg">`;
+    sqrElement.innerHTML += ` <img class="piece" src="svg-pieces/${this.type}.svg">`;
 
     sqrElement.addEventListener('click',this.clickOnPiece);
     
@@ -24,10 +25,18 @@ class Piece {
 
     const sqrElementOld = document.querySelector('.js-sqr'+this.oldPosition);
     const sqrElementNew = document.querySelector('.js-sqr'+this.newPosition);
+    
+    let imgIndex = sqrElementOld.innerHTML.indexOf('<img');
+    sqrElementOld.innerHTML = sqrElementOld.innerHTML.slice(0,imgIndex) + sqrElementOld.innerHTML.slice(imgIndex+44);
 
-    sqrElementOld.innerHTML = ""
-    sqrElementNew.innerHTML = `<img class="piece" src="svg-pieces/${this.type}.svg">`;
-
+    imgIndex = sqrElementNew.innerHTML.indexOf('<img');
+    if (imgIndex == -1) {
+      sqrElementNew.innerHTML += ` <img class="piece" src="svg-pieces/${this.type}.svg">`;
+    } else {
+      sqrElementNew.innerHTML = sqrElementNew.innerHTML.slice(0,imgIndex) + sqrElementNew.innerHTML.slice(imgIndex+44);
+      sqrElementNew.innerHTML += ` <img class="piece" src="svg-pieces/${this.type}.svg">`;
+    }
+    
     sqrElementOld.removeEventListener('click',this.clickOnPiece);
     sqrElementNew.addEventListener('click',this.clickOnPiece);
 
@@ -35,18 +44,107 @@ class Piece {
       sqrElementNew.removeEventListener('click',clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])]);
     }
 
+    boardState[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = '0';
+    boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type;
+
+    pieceObjects[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = '0';
+    pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])] = this;
+
     clickOnPieceFuns[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = '0';
     clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.clickOnPiece;
 
-    boardState[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = '0';
-    boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type;
     this.hasMoved = 1;
+
+    // castling handling
+    if (this.type[1] == 'K' && Math.abs(Number(this.newPosition[0])-Number(this.oldPosition[0])) > 1) {
+      //short castle
+      if (Number(this.newPosition[0])-Number(this.oldPosition[0]) > 0) {
+        const rookPosOld = '7' + this.newPosition[1];
+        const rookPosNew = '5' + this.newPosition[1];
+
+        let rookObject = pieceObjects[this.newPosition[1]][7];
+
+        const rookElementOld = document.querySelector('.js-sqr'+rookPosOld);
+        const rookElementNew = document.querySelector('.js-sqr'+rookPosNew);
+
+        imgIndex = rookElementOld.innerHTML.indexOf('<img');
+        rookElementOld.innerHTML = rookElementOld.innerHTML.slice(0,imgIndex) + rookElementOld.innerHTML.slice(imgIndex+44);
+
+        imgIndex = rookElementNew.innerHTML.indexOf('<img');
+        if (imgIndex == -1) {
+          rookElementNew.innerHTML += ` <img class="piece" src="svg-pieces/${rookObject.type}.svg">`;
+        } else {
+          rookElementNew.innerHTML = rookElementNew.innerHTML.slice(0,imgIndex) + rookElementNew.innerHTML.slice(imgIndex+44);
+          rookElementNew.innerHTML += ` <img class="piece" src="svg-pieces/${rookObject.type}.svg">`;
+        }
+
+        rookElementOld.removeEventListener('click',rookObject.clickOnPiece);
+        rookElementNew.addEventListener('click',rookObject.clickOnPiece);
+
+        boardState[this.newPosition[1]][7] = '0';
+        boardState[this.newPosition[1]][5] = rookObject.type;
+
+        pieceObjects[this.newPosition[1]][7] = '0';
+        pieceObjects[this.newPosition[1]][5] = rookObject;
+
+        clickOnPieceFuns[this.newPosition[1]][7] = '0';
+        clickOnPieceFuns[this.newPosition[1]][5] = rookObject.clickOnPiece;
+
+        rookObject.hasMoved = 1;
+        rookObject.oldPosition = rookPosOld;
+        rookObject.newPosition = rookPosNew;
+
+      } else { //long castle 
+        const rookPosOld = '0' + this.newPosition[1];
+        const rookPosNew = '3' + this.newPosition[1];
+
+        let rookObject = pieceObjects[this.newPosition[1]][0];
+
+        const rookElementOld = document.querySelector('.js-sqr'+rookPosOld);
+        const rookElementNew = document.querySelector('.js-sqr'+rookPosNew);
+
+        imgIndex = rookElementOld.innerHTML.indexOf('<img');
+        rookElementOld.innerHTML = rookElementOld.innerHTML.slice(0,imgIndex) + rookElementOld.innerHTML.slice(imgIndex+44);
+
+        imgIndex = rookElementNew.innerHTML.indexOf('<img');
+        if (imgIndex == -1) {
+          rookElementNew.innerHTML += ` <img class="piece" src="svg-pieces/${rookObject.type}.svg">`;
+        } else {
+          rookElementNew.innerHTML = rookElementNew.innerHTML.slice(0,imgIndex) + rookElementNew.innerHTML.slice(imgIndex+44);
+          rookElementNew.innerHTML += ` <img class="piece" src="svg-pieces/${rookObject.type}.svg">`;
+        }
+
+        rookElementOld.removeEventListener('click',rookObject.clickOnPiece);
+        rookElementNew.addEventListener('click',rookObject.clickOnPiece);
+
+        boardState[this.newPosition[1]][0] = '0';
+        boardState[this.newPosition[1]][3] = rookObject.type;
+
+        pieceObjects[this.newPosition[1]][0] = '0';
+        pieceObjects[this.newPosition[1]][3] = rookObject;
+
+        clickOnPieceFuns[this.newPosition[1]][0] = '0';
+        clickOnPieceFuns[this.newPosition[1]][3] = rookObject.clickOnPiece;
+
+        rookObject.hasMoved = 1;
+        rookObject.oldPosition = rookPosOld;
+        rookObject.newPosition = rookPosNew;
+
+      }
+    }
 
     if (turn === "w") {
       turn = "b";
+      document.querySelector('.js-turn-reminder').innerHTML = 'Black to move';
+      document.querySelector('.js-turn-reminder').classList.remove('turn-reminder-w');
+      document.querySelector('.js-turn-reminder').classList.add('turn-reminder-b');
     } else {
       turn = "w";
+      document.querySelector('.js-turn-reminder').innerHTML = 'White to move';
+      document.querySelector('.js-turn-reminder').classList.remove('turn-reminder-b');
+      document.querySelector('.js-turn-reminder').classList.add('turn-reminder-w');
     }
+
   }
 
   colorLegalSqrs(legalMoves) {
@@ -643,6 +741,18 @@ class King extends Piece {
       if (boardState[y+1][x-1][0] == '0' || boardState[y+1][x-1][0] != this.type[0]) {
         legalMoves.push(String(x-1)+String(y+1));
       }
+    }
+
+    // short castle
+    if (!this.hasMoved && boardState[y][x+1] == '0' && boardState[y][x+2] == '0' && 
+      (pieceObjects[y][x+3] != '0' && pieceObjects[y][x+3].hasMoved == 0)) {
+      legalMoves.push(String(x+2)+String(y));
+    }
+
+    // long castle
+    if (!this.hasMoved && boardState[y][x-1] == '0' && boardState[y][x-2] == '0' && boardState[y][x-3] == '0' &&
+      (pieceObjects[y][x-4] != '0' && pieceObjects[y][x-4].hasMoved == 0)) {
+      legalMoves.push(String(x-2)+String(y));
     }
 
     this.colorLegalSqrs(legalMoves);

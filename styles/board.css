@@ -23,6 +23,7 @@
 
 .sqrw , .sqrb {
   aspect-ratio: 1/1;
+  position: relative;
 }
 
 .sqrw{
@@ -57,4 +58,36 @@
 
 .js-sqrb-clicked{
   background-color: rgb(190, 81, 81);
+}
+
+.text-a1,.text-b1,.text-c1,.text-d1,.text-e1,.text-f1,.text-h1 {
+  position: absolute;
+  bottom: -1px;
+  left: 2px;
+  font-size: 80%;
+  font-weight: 600;
+}
+
+.text-g1 {
+  position: absolute;
+  bottom: 1px;
+  left: 2px;
+  font-size: 80%;
+  font-weight: 600;
+}
+
+.text-h2,.text-h3,.text-h4,.text-h5,.text-h6,.text-h7,.text-h8 {
+  position: absolute;
+  top: -11px;
+  right: 2px;
+  font-size: 80%;
+  font-weight: 600;
+}
+
+.text-h1n {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  font-size: 80%;
+  font-weight: 600;
 }

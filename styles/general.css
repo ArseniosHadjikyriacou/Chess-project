@@ -1,5 +1,5 @@
 body{
-  color: black;
+  color: rgb(35, 35, 35);
   font-family: Arial;
   background-color: rgb(35, 35, 35);
 }
@@ -10,4 +10,18 @@ body{
   margin-left: auto;
   margin-right: auto;
   margin-top: 30px;
+}
+
+.turn-reminder{
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.turn-reminder-w{
+  color: white;
+}
+
+.turn-reminder-b{
+  color: black;
 }
