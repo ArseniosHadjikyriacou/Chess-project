@@ -52,5 +52,3 @@ pieces.forEach( pieceObject => {
   pieceObject.startingPosition();
 }
 );
-
-console.log(boardState);

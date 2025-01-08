@@ -129,7 +129,6 @@ class Piece {
         rookObject.hasMoved = 1;
         rookObject.oldPosition = rookPosOld;
         rookObject.newPosition = rookPosNew;
-
       }
     }
 
@@ -273,6 +272,7 @@ class Pawn extends Piece {
       }
     }
 
+    legalMoves = moveFiltering(x,y,legalMoves);
     this.colorLegalSqrs(legalMoves);
     
   }
@@ -355,6 +355,7 @@ class Rook extends Piece {
       }
     }
 
+    legalMoves = moveFiltering(x,y,legalMoves);
     this.colorLegalSqrs(legalMoves);
 
   }
@@ -428,6 +429,7 @@ class Knight extends Piece {
       }
     }
 
+    legalMoves = moveFiltering(x,y,legalMoves);
     this.colorLegalSqrs(legalMoves);
 
   }
@@ -517,6 +519,7 @@ class Bishop extends Piece {
       }
     }
 
+    legalMoves = moveFiltering(x,y,legalMoves);
     this.colorLegalSqrs(legalMoves);
 
   }
@@ -670,6 +673,7 @@ class Queen extends Piece {
       }
     }
 
+    legalMoves = moveFiltering(x,y,legalMoves);
     this.colorLegalSqrs(legalMoves);
 
   }
@@ -745,16 +749,19 @@ class King extends Piece {
 
     // short castle
     if (!this.hasMoved && boardState[y][x+1] == '0' && boardState[y][x+2] == '0' && 
-      (pieceObjects[y][x+3] != '0' && pieceObjects[y][x+3].hasMoved == 0)) {
+      (pieceObjects[y][x+3] != '0' && pieceObjects[y][x+3].hasMoved == 0) &&
+      !isSqrInCheck(this.type,x,y,boardState) && !isSqrInCheck(this.type,x+1,y,boardState) && !isSqrInCheck(this.type,x+2,y,boardState)) {
       legalMoves.push(String(x+2)+String(y));
     }
 
     // long castle
     if (!this.hasMoved && boardState[y][x-1] == '0' && boardState[y][x-2] == '0' && boardState[y][x-3] == '0' &&
-      (pieceObjects[y][x-4] != '0' && pieceObjects[y][x-4].hasMoved == 0)) {
+      (pieceObjects[y][x-4] != '0' && pieceObjects[y][x-4].hasMoved == 0) &&
+      !isSqrInCheck(this.type,x,y,boardState) && !isSqrInCheck(this.type,x+1,y,boardState) && !isSqrInCheck(this.type,x+2,y,boardState)) {
       legalMoves.push(String(x-2)+String(y));
     }
 
+    legalMoves = moveFiltering(x,y,legalMoves);
     this.colorLegalSqrs(legalMoves);
 
   }
