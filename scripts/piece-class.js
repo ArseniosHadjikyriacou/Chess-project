@@ -55,6 +55,21 @@ class Piece {
 
     this.hasMoved = 1;
 
+    // promotion handling
+    if (this.type[1] == 'P' && (this.newPosition[1] == '0' || this.newPosition[1] == '7')) {
+      imgIndex = sqrElementNew.innerHTML.indexOf('<img');
+      sqrElementNew.innerHTML = sqrElementNew.innerHTML.slice(0,imgIndex) + sqrElementNew.innerHTML.slice(imgIndex+44);
+      sqrElementNew.innerHTML += ` <img class="piece" src="svg-pieces/${this.type[0]}Q.svg">`;
+      sqrElementNew.removeEventListener('click',this.clickOnPiece);
+
+      boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type[0] + 'Q';
+      pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])] = new Queen(this.type[0] + 'Q',this.newPosition,this.newPosition);
+      clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])] = pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])].clickOnPiece;
+      pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])].hasMoved = 1;
+
+      sqrElementNew.addEventListener('click',clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])]);
+    }
+
     // castling handling
     if (this.type[1] == 'K' && Math.abs(Number(this.newPosition[0])-Number(this.oldPosition[0])) > 1) {
       //short castle
