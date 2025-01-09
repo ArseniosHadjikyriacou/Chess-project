@@ -1,4 +1,6 @@
-let turn = "w"
+let turn = "w";
+let turnNumber = 0;
+let positionHistory = [];
 
 let boardState = Array(8).fill().map(() => Array(8).fill('0'));
 let pieceObjects = Array(8).fill().map(() => Array(8).fill('0'));

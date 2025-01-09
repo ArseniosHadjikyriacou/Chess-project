@@ -15,6 +15,13 @@ const moveFiltering = function (x,y,pseudoLegal) {
     newBoard[yNew][xNew] = newBoard[y][x];
     newBoard[y][x] = '0';
 
+    // en-passant handling
+    if (boardState[y][x] == 'wP' && boardState[yNew][xNew] == '0' && x != xNew) {
+      newBoard[yNew+1][xNew] = '0';
+    } else if (boardState[y][x] == 'bP' && boardState[yNew][xNew] == '0' && x != xNew) {
+      newBoard[yNew-1][xNew] = '0';
+    }
+
     // castling handling
     if (boardState[y][x][1] == 'K' && Math.abs(move[0]-x) > 1) {
       if (move[0]-x > 0) {

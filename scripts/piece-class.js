@@ -19,6 +19,7 @@ class Piece {
 
     sqrElement.addEventListener('click',this.clickOnPiece);
     
+    positionHistory.push(boardState);
   }
 
   movePiece() {
@@ -44,6 +45,39 @@ class Piece {
       sqrElementNew.removeEventListener('click',clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])]);
     }
 
+    // en-passant handling
+    if (boardState[this.oldPosition[1]][this.oldPosition[0]] == 'wP' && 
+        boardState[this.newPosition[1]][this.newPosition[0]] == '0' && 
+        this.oldPosition[0] != this.newPosition[0]) {
+          
+      let pawnObject = pieceObjects[Number(this.newPosition[1])+1][Number(this.newPosition[0])];
+      const pawnElementOld = document.querySelector('.js-sqr'+pawnObject.newPosition);
+
+      imgIndex = pawnElementOld.innerHTML.indexOf('<img');
+      pawnElementOld.innerHTML = pawnElementOld.innerHTML.slice(0,imgIndex) + pawnElementOld.innerHTML.slice(imgIndex+44);
+      pawnElementOld.removeEventListener('click',pawnObject.clickOnPiece);
+
+      boardState[Number(this.newPosition[1])+1][Number(this.newPosition[0])] = '0';
+      pieceObjects[Number(this.newPosition[1])+1][Number(this.newPosition[0])] = '0';
+      clickOnPieceFuns[Number(this.newPosition[1])+1][Number(this.newPosition[0])] = '0';
+
+    } else if (boardState[this.oldPosition[1]][this.oldPosition[0]] == 'bP' && 
+               boardState[this.newPosition[1]][this.newPosition[0]] == '0' && 
+               this.oldPosition[0] != this.newPosition[0]) {
+
+      let pawnObject = pieceObjects[Number(this.newPosition[1])-1][Number(this.newPosition[0])];
+      const pawnElementOld = document.querySelector('.js-sqr'+pawnObject.newPosition);
+      
+      imgIndex = pawnElementOld.innerHTML.indexOf('<img');
+      pawnElementOld.innerHTML = pawnElementOld.innerHTML.slice(0,imgIndex) + pawnElementOld.innerHTML.slice(imgIndex+44);
+      pawnElementOld.removeEventListener('click',pawnObject.clickOnPiece);
+      
+      boardState[Number(this.newPosition[1])-1][Number(this.newPosition[0])] = '0';
+      pieceObjects[Number(this.newPosition[1])-1][Number(this.newPosition[0])] = '0';
+      clickOnPieceFuns[Number(this.newPosition[1])-1][Number(this.newPosition[0])] = '0';
+
+    }
+
     boardState[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = '0';
     boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type;
 
@@ -55,7 +89,7 @@ class Piece {
 
     this.hasMoved = 1;
 
-    // promotion handling
+    // promotion and double push handling
     if (this.type[1] == 'P' && (this.newPosition[1] == '0' || this.newPosition[1] == '7')) {
       imgIndex = sqrElementNew.innerHTML.indexOf('<img');
       sqrElementNew.innerHTML = sqrElementNew.innerHTML.slice(0,imgIndex) + sqrElementNew.innerHTML.slice(imgIndex+44);
@@ -68,6 +102,8 @@ class Piece {
       pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])].hasMoved = 1;
 
       sqrElementNew.addEventListener('click',clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])]);
+    } else if (this.type[1] == 'P' && Math.abs(Number(this.newPosition[1])-Number(this.oldPosition[1])) == 2) {
+      this.doublePush = 1;
     }
 
     // castling handling
@@ -159,6 +195,19 @@ class Piece {
       document.querySelector('.js-turn-reminder').classList.add('turn-reminder-w');
     }
 
+    // en-passant handling
+    for (let i=0; i<=7; i++){
+      for (let j=0; j<=7; j++){
+        if (pieceObjects[i][j] != '0' && pieceObjects[i][j].type[1] == 'P' && pieceObjects[i][j].doublePush) {
+          pieceObjects[i][j].enPassantCounter += 1;
+        }
+      }
+    }
+
+    turnNumber += 1;
+    positionHistory.push(boardState);
+
+
   }
 
   colorLegalSqrs(legalMoves) {
@@ -244,6 +293,8 @@ class Piece {
 class Pawn extends Piece {
   constructor(type, oldPosition, newPosition) {
     super(type, oldPosition, newPosition);
+    this.doublePush = 0;
+    this.enPassantCounter = 0;
   }
 
   findLegalMoves() {
@@ -284,6 +335,21 @@ class Pawn extends Piece {
         if (boardState[y+2*dir][x] == '0') {
           legalMoves.push(String(x)+String(y+2*dir));
         }
+      }
+    }
+
+    // en-passant handling
+    if (this.type[0] == 'w' && y == 3) {
+      if (x+1 <= 7 && boardState[y][x+1] == 'bP' && pieceObjects[y][x+1].enPassantCounter == 1) {
+        legalMoves.push(String(x+1)+String(y-1));
+      } else if (x-1 >= 0 && boardState[y][x-1] == 'bP' && pieceObjects[y][x-1].enPassantCounter == 1) {
+        legalMoves.push(String(x-1)+String(y-1));
+      }
+    } else if (this.type[0] == 'b' && y == 4) {
+      if (x+1 <= 7 && boardState[y][x+1] == 'wP' && pieceObjects[y][x+1].enPassantCounter == 1) {
+        legalMoves.push(String(x+1)+String(y+1));
+      } else if (x-1 >= 0 && boardState[y][x-1] == 'wP' && pieceObjects[y][x-1].enPassantCounter == 1) {
+        legalMoves.push(String(x-1)+String(y+1));
       }
     }
 
