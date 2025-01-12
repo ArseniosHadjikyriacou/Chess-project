@@ -8,24 +8,46 @@
     <link rel="stylesheet" href="styles/general.css" />
     <link rel="stylesheet" href="styles/board.css" />
     <link rel="stylesheet" href="styles/pieces.css" />
+    <link rel="stylesheet" href="styles/buttons.css" />
   </head>
 
   <body>
+
+    <div class="move-buttons">
+      <button class="backward js-backward"> 
+        &lt 
+      </button>
+  
+      <button class="forward js-forward"> 
+        &gt 
+      </button>
+    </div>
+
     <div class="board-container">
       <div class="board js-board">
       </div>
     </div>
-    <p class="turn-reminder turn-reminder-w js-turn-reminder js-turn-reminder">
-      White to move
-    </p>
 
+
+    <div class="turn-reminder-container">
+      <div class="turn-reminder turn-reminder-w js-turn-reminder js-turn-reminder">
+        White to move
+      </div>
+    </div>
+    
 
     <script src="scripts/global-variables.js"></script>
-    <script src="scripts/click-functions.js"></script>
-    <script src="scripts/legal-move-filtering.js"></script>
+
     <script src="scripts/piece-class.js"></script>
+
     <script src="scripts/generate-board.js"></script>
     <script src="scripts/generate-pieces.js"></script>
+
+    <script src="scripts/legal-move-filtering.js"></script>
+    <script src="scripts/click-functions.js"></script>
+    <script src="scripts/rewind.js"></script>
+    
+
   </body>
 
 </html>

@@ -1,0 +1,26 @@
+.move-buttons{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.backward,.forward{
+  height: 45px;
+  width: 45px;
+  font-size: 300%;
+  font-weight: 500;
+  padding: 0px;
+  line-height: 0px;
+  background-color: rgb(232, 220, 195);
+  transition-duration: 0.15s;
+  border-radius: 5px;
+  border: none;
+}
+
+.backward:hover,.forward:hover{
+  background-color: rgba(232, 220, 195, 0.8);
+}
+
+.backward:active,.forward:active{
+  background-color: rgb(190, 150, 103);
+}

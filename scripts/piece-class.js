@@ -1,31 +1,28 @@
 class Piece {
 
-  constructor(type, oldPosition, newPosition) {
+  constructor(type, positions) {
     this.type = type;
-    this.oldPosition = oldPosition;
-    this.newPosition = newPosition;
+    this.positions = positions;
+    this.hasMoved = [0,0];
+    this.wasCaptured = [0,0];
+    this.createdAt = num+1;
     this.clickOnPiece = () => clickOnPiece(this);
     this.clickToMove = (event) => clickToMove(event,this);
-    this.hasMoved = 0;
   }
 
-  startingPosition() {
-    boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type;
-    pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])] = this;
-    clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.clickOnPiece;
-
-    const sqrElement = document.querySelector('.js-sqr'+this.newPosition);
+  placePiece() {
+    const sqrElement = document.querySelector('.js-sqr'+this.positions[num]);
     sqrElement.innerHTML += ` <img class="piece" src="svg-pieces/${this.type}.svg">`;
-
     sqrElement.addEventListener('click',this.clickOnPiece);
-    
-    positionHistory.push(boardState);
   }
 
   movePiece() {
+    
+    const oldPos = this.positions.at(-2);
+    const newPos = this.positions.at(-1);
 
-    const sqrElementOld = document.querySelector('.js-sqr'+this.oldPosition);
-    const sqrElementNew = document.querySelector('.js-sqr'+this.newPosition);
+    const sqrElementOld = document.querySelector('.js-sqr'+oldPos);
+    const sqrElementNew = document.querySelector('.js-sqr'+newPos);
     
     let imgIndex = sqrElementOld.innerHTML.indexOf('<img');
     sqrElementOld.innerHTML = sqrElementOld.innerHTML.slice(0,imgIndex) + sqrElementOld.innerHTML.slice(imgIndex+44);
@@ -41,79 +38,80 @@ class Piece {
     sqrElementOld.removeEventListener('click',this.clickOnPiece);
     sqrElementNew.addEventListener('click',this.clickOnPiece);
 
-    if (clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])] != '0') { 
-      sqrElementNew.removeEventListener('click',clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])]);
+    const capturedPiece = pieceAtPosition(Number(newPos[0]),Number(newPos[1]))
+    if (capturedPiece) { 
+      sqrElementNew.removeEventListener('click',capturedPiece.clickOnPiece);
+      capturedPiece.wasCaptured[0] = 1;
+      capturedPiece.wasCaptured[1] = num;
     }
 
     // en-passant handling
-    if (boardState[this.oldPosition[1]][this.oldPosition[0]] == 'wP' && 
-        boardState[this.newPosition[1]][this.newPosition[0]] == '0' && 
-        this.oldPosition[0] != this.newPosition[0]) {
+    if (boardState[Number(oldPos[1])][Number(oldPos[0])] == 'wP' && 
+        !boardState[Number(newPos[1])][Number(newPos[0])] && 
+        oldPos[0] != newPos[0]) {
           
-      let pawnObject = pieceObjects[Number(this.newPosition[1])+1][Number(this.newPosition[0])];
-      const pawnElementOld = document.querySelector('.js-sqr'+pawnObject.newPosition);
+      const pawnObject = pieceAtPosition(Number(newPos[0]),Number(newPos[1])+1);
+      pawnObject.wasCaptured[0] = 1;
+      pawnObject.wasCaptured[1] = num;
+      const pawnElementOld = document.querySelector('.js-sqr'+pawnObject.positions.at(-1));
 
       imgIndex = pawnElementOld.innerHTML.indexOf('<img');
       pawnElementOld.innerHTML = pawnElementOld.innerHTML.slice(0,imgIndex) + pawnElementOld.innerHTML.slice(imgIndex+44);
       pawnElementOld.removeEventListener('click',pawnObject.clickOnPiece);
 
-      boardState[Number(this.newPosition[1])+1][Number(this.newPosition[0])] = '0';
-      pieceObjects[Number(this.newPosition[1])+1][Number(this.newPosition[0])] = '0';
-      clickOnPieceFuns[Number(this.newPosition[1])+1][Number(this.newPosition[0])] = '0';
+      boardState[Number(newPos[1])+1][Number(newPos[0])] = 0;
 
-    } else if (boardState[this.oldPosition[1]][this.oldPosition[0]] == 'bP' && 
-               boardState[this.newPosition[1]][this.newPosition[0]] == '0' && 
-               this.oldPosition[0] != this.newPosition[0]) {
+    } else if (boardState[Number(oldPos[1])][Number(oldPos[0])] == 'bP' && 
+               !boardState[Number(newPos[1])][Number(newPos[0])] && 
+               oldPos[0] != newPos[0]) {
 
-      let pawnObject = pieceObjects[Number(this.newPosition[1])-1][Number(this.newPosition[0])];
-      const pawnElementOld = document.querySelector('.js-sqr'+pawnObject.newPosition);
-      
+      const pawnObject = pieceAtPosition(Number(newPos[0]),Number(newPos[1])-1);
+      pawnObject.wasCaptured[0] = 1;
+      pawnObject.wasCaptured[1] = num;
+      const pawnElementOld = document.querySelector('.js-sqr'+pawnObject.positions.at(-1));
+          
       imgIndex = pawnElementOld.innerHTML.indexOf('<img');
       pawnElementOld.innerHTML = pawnElementOld.innerHTML.slice(0,imgIndex) + pawnElementOld.innerHTML.slice(imgIndex+44);
       pawnElementOld.removeEventListener('click',pawnObject.clickOnPiece);
-      
-      boardState[Number(this.newPosition[1])-1][Number(this.newPosition[0])] = '0';
-      pieceObjects[Number(this.newPosition[1])-1][Number(this.newPosition[0])] = '0';
-      clickOnPieceFuns[Number(this.newPosition[1])-1][Number(this.newPosition[0])] = '0';
+          
+      boardState[Number(newPos[1])-1][Number(newPos[0])] = 0;
 
     }
 
-    boardState[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = '0';
-    boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type;
+    boardState[Number(oldPos[1])][Number(oldPos[0])] = 0;
+    boardState[Number(newPos[1])][Number(newPos[0])] = this.type;
 
-    pieceObjects[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = '0';
-    pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])] = this;
-
-    clickOnPieceFuns[Number(this.oldPosition[1])][Number(this.oldPosition[0])] = '0';
-    clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.clickOnPiece;
-
-    this.hasMoved = 1;
+    this.hasMoved[0] = 1;
+    this.hasMoved[1] = num;
 
     // promotion and double push handling
-    if (this.type[1] == 'P' && (this.newPosition[1] == '0' || this.newPosition[1] == '7')) {
+    if (this.type[1] == 'P' && (newPos[1] == '0' || newPos[1] == '7')) {
       imgIndex = sqrElementNew.innerHTML.indexOf('<img');
       sqrElementNew.innerHTML = sqrElementNew.innerHTML.slice(0,imgIndex) + sqrElementNew.innerHTML.slice(imgIndex+44);
       sqrElementNew.innerHTML += ` <img class="piece" src="svg-pieces/${this.type[0]}Q.svg">`;
       sqrElementNew.removeEventListener('click',this.clickOnPiece);
+      this.wasCaptured[0] = 1;
+      this.wasCaptured[1] = num;
 
-      boardState[Number(this.newPosition[1])][Number(this.newPosition[0])] = this.type[0] + 'Q';
-      pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])] = new Queen(this.type[0] + 'Q',this.newPosition,this.newPosition);
-      clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])] = pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])].clickOnPiece;
-      pieceObjects[Number(this.newPosition[1])][Number(this.newPosition[0])].hasMoved = 1;
+      boardState[Number(newPos[1])][Number(newPos[0])] = this.type[0] + 'Q';
+      const queen = new Queen(this.type[0] + 'Q',Array(num+1).fill(0).concat([newPos]));
+      pieces.push(queen);
+      
+      sqrElementNew.addEventListener('click',queen.clickOnPiece);
 
-      sqrElementNew.addEventListener('click',clickOnPieceFuns[Number(this.newPosition[1])][Number(this.newPosition[0])]);
-    } else if (this.type[1] == 'P' && Math.abs(Number(this.newPosition[1])-Number(this.oldPosition[1])) == 2) {
-      this.doublePush = 1;
+    } else if (this.type[1] == 'P' && Math.abs(Number(newPos[1])-Number(oldPos[1])) == 2) {
+      this.doublePush[0] = 1;
+      this.doublePush[1] = num;
     }
 
     // castling handling
-    if (this.type[1] == 'K' && Math.abs(Number(this.newPosition[0])-Number(this.oldPosition[0])) > 1) {
+    if (this.type[1] == 'K' && Math.abs(Number(newPos[0])-Number(oldPos[0])) > 1) {
       //short castle
-      if (Number(this.newPosition[0])-Number(this.oldPosition[0]) > 0) {
-        const rookPosOld = '7' + this.newPosition[1];
-        const rookPosNew = '5' + this.newPosition[1];
+      if (Number(newPos[0])-Number(oldPos[0]) > 0) {
+        const rookPosOld = '7' + newPos[1];
+        const rookPosNew = '5' + newPos[1];
 
-        let rookObject = pieceObjects[this.newPosition[1]][7];
+        let rookObject = pieceAtPosition(7,newPos[1]);
 
         const rookElementOld = document.querySelector('.js-sqr'+rookPosOld);
         const rookElementNew = document.querySelector('.js-sqr'+rookPosNew);
@@ -132,24 +130,18 @@ class Piece {
         rookElementOld.removeEventListener('click',rookObject.clickOnPiece);
         rookElementNew.addEventListener('click',rookObject.clickOnPiece);
 
-        boardState[this.newPosition[1]][7] = '0';
-        boardState[this.newPosition[1]][5] = rookObject.type;
+        boardState[newPos[1]][7] = 0;
+        boardState[newPos[1]][5] = rookObject.type;
 
-        pieceObjects[this.newPosition[1]][7] = '0';
-        pieceObjects[this.newPosition[1]][5] = rookObject;
-
-        clickOnPieceFuns[this.newPosition[1]][7] = '0';
-        clickOnPieceFuns[this.newPosition[1]][5] = rookObject.clickOnPiece;
-
-        rookObject.hasMoved = 1;
-        rookObject.oldPosition = rookPosOld;
-        rookObject.newPosition = rookPosNew;
+        rookObject.hasMoved[0] = 1;
+        rookObject.hasMoved[1] = num;
+        rookObject.positions.push(rookPosNew);
 
       } else { //long castle 
-        const rookPosOld = '0' + this.newPosition[1];
-        const rookPosNew = '3' + this.newPosition[1];
+        const rookPosOld = '0' + newPos[1];
+        const rookPosNew = '3' + newPos[1];
 
-        let rookObject = pieceObjects[this.newPosition[1]][0];
+        let rookObject = pieceAtPosition(0,newPos[1]);
 
         const rookElementOld = document.querySelector('.js-sqr'+rookPosOld);
         const rookElementNew = document.querySelector('.js-sqr'+rookPosNew);
@@ -168,54 +160,31 @@ class Piece {
         rookElementOld.removeEventListener('click',rookObject.clickOnPiece);
         rookElementNew.addEventListener('click',rookObject.clickOnPiece);
 
-        boardState[this.newPosition[1]][0] = '0';
-        boardState[this.newPosition[1]][3] = rookObject.type;
+        boardState[newPos[1]][0] = 0;
+        boardState[newPos[1]][3] = rookObject.type;
 
-        pieceObjects[this.newPosition[1]][0] = '0';
-        pieceObjects[this.newPosition[1]][3] = rookObject;
-
-        clickOnPieceFuns[this.newPosition[1]][0] = '0';
-        clickOnPieceFuns[this.newPosition[1]][3] = rookObject.clickOnPiece;
-
-        rookObject.hasMoved = 1;
-        rookObject.oldPosition = rookPosOld;
-        rookObject.newPosition = rookPosNew;
+        rookObject.hasMoved[0] = 1;
+        rookObject.hasMoved[1] = num;
+        rookObject.positions.push(rookPosNew);
       }
     }
 
-    if (turn === "w") {
-      turn = "b";
-      document.querySelector('.js-turn-reminder').innerHTML = 'Black to move';
-      document.querySelector('.js-turn-reminder').classList.remove('turn-reminder-w');
-      document.querySelector('.js-turn-reminder').classList.add('turn-reminder-b');
-    } else {
-      turn = "w";
-      document.querySelector('.js-turn-reminder').innerHTML = 'White to move';
-      document.querySelector('.js-turn-reminder').classList.remove('turn-reminder-b');
-      document.querySelector('.js-turn-reminder').classList.add('turn-reminder-w');
-    }
+    changeColor();
 
-    // en-passant handling
-    for (let i=0; i<=7; i++){
-      for (let j=0; j<=7; j++){
-        if (pieceObjects[i][j] != '0' && pieceObjects[i][j].type[1] == 'P' && pieceObjects[i][j].doublePush) {
-          pieceObjects[i][j].enPassantCounter += 1;
-        }
-      }
-    }
+    // fill in positions of pieces that have not moved in this turn
+    updatePiecePositions();
 
-    turnNumber += 1;
-    positionHistory.push(boardState);
-
-
+    num += 1;
+    
+    
   }
 
   colorLegalSqrs(legalMoves) {
-    const sqrElementNew = document.querySelector('.js-sqr'+this.newPosition);
+    const sqrElementNew = document.querySelector('.js-sqr'+this.positions[num]);
 
-    if (coloredSqrs.length > 0) {
+    if (coloredSqrs.length) {
 
-      if (coloredSqrs[0] == this.newPosition) {
+      if (coloredSqrs[0] == this.positions[num]) {
         coloredSqrs = [];
         sqrElementNew.classList.remove('js-sqrw-clicked','js-sqrb-clicked');
 
@@ -255,14 +224,14 @@ class Piece {
         );
 
         coloredSqrs = [];
-        coloredSqrs.push(this.newPosition);
+        coloredSqrs.push(this.positions[num]);
         coloredSqrs.push(legalMoves);
         coloredSqrs.push(this.clickToMove);
       }
 
     } else {
 
-      coloredSqrs.push(this.newPosition);
+      coloredSqrs.push(this.positions[num]);
       coloredSqrs.push(legalMoves);
       coloredSqrs.push(this.clickToMove);
 
@@ -291,10 +260,9 @@ class Piece {
 
 
 class Pawn extends Piece {
-  constructor(type, oldPosition, newPosition) {
-    super(type, oldPosition, newPosition);
-    this.doublePush = 0;
-    this.enPassantCounter = 0;
+  constructor(type, positions) {
+    super(type, positions);
+    this.doublePush = [0,0];
   }
 
   findLegalMoves() {
@@ -306,33 +274,33 @@ class Pawn extends Piece {
       dir = 1;
     }
 
-    const x = Number(this.newPosition[0]);
-    const y = Number(this.newPosition[1]);
+    const x = Number(this.positions[num][0]);
+    const y = Number(this.positions[num][1]);
 
     let legalMoves = [];
 
-    if (this.hasMoved) {
+    if (this.hasMoved[0] && this.hasMoved[1] < num) {
       if (y+dir <= 7 && y+dir >= 0) {
-        if (x-1 >= 0 && boardState[y+dir][x-1] != '0' &&  boardState[y+dir][x-1][0] != this.type[0]) {
+        if (x-1 >= 0 && boardState[y+dir][x-1] &&  boardState[y+dir][x-1][0] != this.type[0]) {
           legalMoves.push(String(x-1)+String(y+dir));
         }
-        if (x+1 <= 7 && boardState[y+dir][x+1] != 0 && boardState[y+dir][x+1][0] != this.type[0] ) {
+        if (x+1 <= 7 && boardState[y+dir][x+1] && boardState[y+dir][x+1][0] != this.type[0] ) {
           legalMoves.push(String(x+1)+String(y+dir));
         }
-        if (boardState[y+dir][x] == '0') {
+        if (!boardState[y+dir][x]) {
           legalMoves.push(String(x)+String(y+dir));
         }
       }
     } else {
-      if (x-1 >= 0 && boardState[y+dir][x-1] != '0' &&  boardState[y+dir][x-1][0] != this.type[0]) {
+      if (x-1 >= 0 && boardState[y+dir][x-1] &&  boardState[y+dir][x-1][0] != this.type[0]) {
         legalMoves.push(String(x-1)+String(y+dir));
       }
-      if (x+1 <= 7 && boardState[y+dir][x+1] != '0' && boardState[y+dir][x+1][0] != this.type[0] ) {
+      if (x+1 <= 7 && boardState[y+dir][x+1] && boardState[y+dir][x+1][0] != this.type[0] ) {
         legalMoves.push(String(x+1)+String(y+dir));
       }
-      if (boardState[y+dir][x] == '0') {
+      if (!boardState[y+dir][x]) {
         legalMoves.push(String(x)+String(y+dir));
-        if (boardState[y+2*dir][x] == '0') {
+        if (!boardState[y+2*dir][x]) {
           legalMoves.push(String(x)+String(y+2*dir));
         }
       }
@@ -340,15 +308,19 @@ class Pawn extends Piece {
 
     // en-passant handling
     if (this.type[0] == 'w' && y == 3) {
-      if (x+1 <= 7 && boardState[y][x+1] == 'bP' && pieceObjects[y][x+1].enPassantCounter == 1) {
+      if (x+1 <= 7 && boardState[y][x+1] == 'bP' && pieceAtPosition(x+1,y).type == 'bP' &&
+        pieceAtPosition(x+1,y).doublePush[0] == 1 && pieceAtPosition(x+1,y).doublePush[1] == num-1) {
         legalMoves.push(String(x+1)+String(y-1));
-      } else if (x-1 >= 0 && boardState[y][x-1] == 'bP' && pieceObjects[y][x-1].enPassantCounter == 1) {
+      } else if (x-1 >= 0 && boardState[y][x-1] == 'bP' && pieceAtPosition(x-1,y).type == 'bP' &&
+        pieceAtPosition(x-1,y).doublePush[0] == 1 && pieceAtPosition(x-1,y).doublePush[1] == num-1) {
         legalMoves.push(String(x-1)+String(y-1));
       }
     } else if (this.type[0] == 'b' && y == 4) {
-      if (x+1 <= 7 && boardState[y][x+1] == 'wP' && pieceObjects[y][x+1].enPassantCounter == 1) {
+      if (x+1 <= 7 && boardState[y][x+1] == 'wP' && pieceAtPosition(x+1,y).type == 'wP' && 
+        pieceAtPosition(x+1,y).doublePush[0] == 1 && pieceAtPosition(x+1,y).doublePush[1] == num-1) {
         legalMoves.push(String(x+1)+String(y+1));
-      } else if (x-1 >= 0 && boardState[y][x-1] == 'wP' && pieceObjects[y][x-1].enPassantCounter == 1) {
+      } else if (x-1 >= 0 && boardState[y][x-1] == 'wP' && pieceAtPosition(x-1,y).type == 'wP' &&  
+        pieceAtPosition(x-1,y).doublePush[0] == 1 && pieceAtPosition(x-1,y).doublePush[1] == num-1) {
         legalMoves.push(String(x-1)+String(y+1));
       }
     }
@@ -361,14 +333,14 @@ class Pawn extends Piece {
 
 
 class Rook extends Piece {
-  constructor(type, oldPosition, newPosition) {
-    super(type, oldPosition, newPosition);
+  constructor(type, positions) {
+    super(type, positions);
   }
 
   findLegalMoves() {
 
-    const x = Number(this.newPosition[0]);
-    const y = Number(this.newPosition[1]);
+    const x = Number(this.positions[num][0]);
+    const y = Number(this.positions[num][1]);
 
     let legalMoves = [];
 
@@ -380,7 +352,7 @@ class Rook extends Piece {
       }
       if (boardState[y][sliderx][0] == this.type[0]) {
         break;
-      } else if (boardState[y][sliderx] == '0') {
+      } else if (!boardState[y][sliderx]) {
         legalMoves.push(String(sliderx)+String(y));
       } else {
         legalMoves.push(String(sliderx)+String(y));
@@ -396,7 +368,7 @@ class Rook extends Piece {
       }
       if (boardState[y][sliderx][0] == this.type[0]) {
         break;
-      } else if (boardState[y][sliderx] == '0') {
+      } else if (!boardState[y][sliderx]) {
         legalMoves.push(String(sliderx)+String(y));
       } else {
         legalMoves.push(String(sliderx)+String(y));
@@ -412,7 +384,7 @@ class Rook extends Piece {
       }
       if (boardState[slidery][x][0] == this.type[0]) {
         break;
-      } else if (boardState[slidery][x] == '0') {
+      } else if (!boardState[slidery][x]) {
         legalMoves.push(String(x)+String(slidery));
       } else {
         legalMoves.push(String(x)+String(slidery));
@@ -428,7 +400,7 @@ class Rook extends Piece {
       }
       if (boardState[slidery][x][0] == this.type[0]) {
         break;
-      } else if (boardState[slidery][x] == '0') {
+      } else if (!boardState[slidery][x]) {
         legalMoves.push(String(x)+String(slidery));
       } else {
         legalMoves.push(String(x)+String(slidery));
@@ -444,87 +416,89 @@ class Rook extends Piece {
 
 
 class Knight extends Piece {
-  constructor(type, oldPosition, newPosition) {
-    super(type, oldPosition, newPosition);
+  constructor(type, positions) {
+    super(type, positions);
   }
 
   findLegalMoves() {
-    const x = Number(this.newPosition[0]);
-    const y = Number(this.newPosition[1]);
-
+    
+    const x = Number(this.positions[num][0]);
+    const y = Number(this.positions[num][1]);
+    
     let legalMoves = [];
 
     // x+1 , y+2
     if (x+1 <= 7 && y+2 <= 7) {
-      if (boardState[y+2][x+1][0] == '0' || boardState[y+2][x+1][0] != this.type[0]) {
+      if (!boardState[y+2][x+1] || boardState[y+2][x+1][0] != this.type[0]) {
         legalMoves.push(String(x+1)+String(y+2));
       }
     }
 
     // x-1 , y+2
     if (x-1 >= 0 && y+2 <= 7) {
-      if (boardState[y+2][x-1][0] == '0' || boardState[y+2][x-1][0] != this.type[0]) {
+      if (!boardState[y+2][x-1] || boardState[y+2][x-1][0] != this.type[0]) {
         legalMoves.push(String(x-1)+String(y+2));
       }
     }
 
     // x+2 , y+1
     if (x+2 <= 7 && y+1 <= 7) {
-      if (boardState[y+1][x+2][0] == '0' || boardState[y+1][x+2][0] != this.type[0]) {
+      if (!boardState[y+1][x+2] || boardState[y+1][x+2][0] != this.type[0]) {
         legalMoves.push(String(x+2)+String(y+1));
       }
     }
 
     // x+2 , y-1
     if (x+2 <= 7 && y-1 >= 0) {
-      if (boardState[y-1][x+2][0] == '0' || boardState[y-1][x+2][0] != this.type[0]) {
+      if (!boardState[y-1][x+2] || boardState[y-1][x+2][0] != this.type[0]) {
         legalMoves.push(String(x+2)+String(y-1));
       }
     }
 
     // x+1 , y-2
     if (x+1 <= 7 && y-2 >= 0) {
-      if (boardState[y-2][x+1][0] == '0' || boardState[y-2][x+1][0] != this.type[0]) {
+      if (!boardState[y-2][x+1] || boardState[y-2][x+1][0] != this.type[0]) {
         legalMoves.push(String(x+1)+String(y-2));
       }
     }
 
     // x-1 , y-2
     if (x-1 >= 0 && y-2 >= 0) {
-      if (boardState[y-2][x-1][0] == '0' || boardState[y-2][x-1][0] != this.type[0]) {
+      if (!boardState[y-2][x-1] || boardState[y-2][x-1][0] != this.type[0]) {
         legalMoves.push(String(x-1)+String(y-2));
       }
     }
 
     // x-2 , y+1
     if (x-2 >= 0 && y+1 <= 7) {
-      if (boardState[y+1][x-2][0] == '0' || boardState[y+1][x-2][0] != this.type[0]) {
+      if (!boardState[y+1][x-2] || boardState[y+1][x-2][0] != this.type[0]) {
         legalMoves.push(String(x-2)+String(y+1));
       }
     }
 
     // x-2 , y-1
     if (x-2 >= 0 && y-1 >= 0) {
-      if (boardState[y-1][x-2][0] == '0' || boardState[y-1][x-2][0] != this.type[0]) {
+      if (!boardState[y-1][x-2] || boardState[y-1][x-2][0] != this.type[0]) {
         legalMoves.push(String(x-2)+String(y-1));
       }
     }
-
+    
     legalMoves = moveFiltering(x,y,legalMoves);
     this.colorLegalSqrs(legalMoves);
-
+    
   }
 }
 
 
 class Bishop extends Piece {
-  constructor(type, oldPosition, newPosition) {
-    super(type, oldPosition, newPosition);
+  constructor(type, positions) {
+    super(type, positions);
   }
 
   findLegalMoves() {
-    const x = Number(this.newPosition[0]);
-    const y = Number(this.newPosition[1]);
+
+    const x = Number(this.positions[num][0]);
+    const y = Number(this.positions[num][1]);
 
     let legalMoves = [];
 
@@ -536,10 +510,10 @@ class Bishop extends Piece {
       if (sliderx < 0 || slidery < 0) {
         break;
       }
-      if (boardState[slidery][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][sliderx] == '0') {
+      if (!boardState[slidery][sliderx]) {
         legalMoves.push(String(sliderx)+String(slidery));
+      } else if (boardState[slidery][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(slidery));
         break;
@@ -554,10 +528,10 @@ class Bishop extends Piece {
       if (sliderx > 7 || slidery < 0) {
         break;
       }
-      if (boardState[slidery][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][sliderx] == '0') {
+      if (!boardState[slidery][sliderx]) {
         legalMoves.push(String(sliderx)+String(slidery));
+      } else if (boardState[slidery][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(slidery));
         break;
@@ -572,10 +546,10 @@ class Bishop extends Piece {
       if (sliderx > 7 || slidery > 7) {
         break;
       }
-      if (boardState[slidery][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][sliderx] == '0') {
+      if (!boardState[slidery][sliderx]) {
         legalMoves.push(String(sliderx)+String(slidery));
+      } else if (boardState[slidery][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(slidery));
         break;
@@ -590,10 +564,10 @@ class Bishop extends Piece {
       if (sliderx < 0 || slidery > 7) {
         break;
       }
-      if (boardState[slidery][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][sliderx] == '0') {
+      if (!boardState[slidery][sliderx]) {
         legalMoves.push(String(sliderx)+String(slidery));
+      } else if (boardState[slidery][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(slidery));
         break;
@@ -608,13 +582,14 @@ class Bishop extends Piece {
 
 
 class Queen extends Piece {
-  constructor(type, oldPosition, newPosition) {
-    super(type, oldPosition, newPosition);
+  constructor(type, positions) {
+    super(type, positions);
   }
 
   findLegalMoves() {
-    const x = Number(this.newPosition[0]);
-    const y = Number(this.newPosition[1]);
+
+    const x = Number(this.positions[num][0]);
+    const y = Number(this.positions[num][1]);
 
     let legalMoves = [];
 
@@ -626,10 +601,10 @@ class Queen extends Piece {
       if (sliderx < 0 || slidery < 0) {
         break;
       }
-      if (boardState[slidery][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][sliderx] == '0') {
+      if (!boardState[slidery][sliderx]) {
         legalMoves.push(String(sliderx)+String(slidery));
+      } else if (boardState[slidery][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(slidery));
         break;
@@ -644,10 +619,10 @@ class Queen extends Piece {
       if (sliderx > 7 || slidery < 0) {
         break;
       }
-      if (boardState[slidery][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][sliderx] == '0') {
+      if (!boardState[slidery][sliderx]) {
         legalMoves.push(String(sliderx)+String(slidery));
+      } else if (boardState[slidery][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(slidery));
         break;
@@ -662,10 +637,10 @@ class Queen extends Piece {
       if (sliderx > 7 || slidery > 7) {
         break;
       }
-      if (boardState[slidery][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][sliderx] == '0') {
+      if (!boardState[slidery][sliderx]) {
         legalMoves.push(String(sliderx)+String(slidery));
+      } else if (boardState[slidery][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(slidery));
         break;
@@ -680,10 +655,10 @@ class Queen extends Piece {
       if (sliderx < 0 || slidery > 7) {
         break;
       }
-      if (boardState[slidery][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][sliderx] == '0') {
+      if (!boardState[slidery][sliderx]) {
         legalMoves.push(String(sliderx)+String(slidery));
+      } else if (boardState[slidery][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(slidery));
         break;
@@ -696,10 +671,10 @@ class Queen extends Piece {
       if (sliderx < 0) {
         break;
       }
-      if (boardState[y][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[y][sliderx] == '0') {
+      if (!boardState[y][sliderx]) {
         legalMoves.push(String(sliderx)+String(y));
+      } else if (boardState[y][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(y));
         break;
@@ -712,10 +687,10 @@ class Queen extends Piece {
       if (sliderx > 7) {
         break;
       }
-      if (boardState[y][sliderx][0] == this.type[0]) {
-        break;
-      } else if (boardState[y][sliderx] == '0') {
+      if (!boardState[y][sliderx]) {
         legalMoves.push(String(sliderx)+String(y));
+      } else if (boardState[y][sliderx][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(sliderx)+String(y));
         break;
@@ -728,10 +703,10 @@ class Queen extends Piece {
       if (slidery < 0) {
         break;
       }
-      if (boardState[slidery][x][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][x] == '0') {
+      if (!boardState[slidery][x]) {
         legalMoves.push(String(x)+String(slidery));
+      } else if (boardState[slidery][x][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(x)+String(slidery));
         break;
@@ -744,10 +719,10 @@ class Queen extends Piece {
       if (slidery > 7) {
         break;
       }
-      if (boardState[slidery][x][0] == this.type[0]) {
-        break;
-      } else if (boardState[slidery][x] == '0') {
+      if (!boardState[slidery][x]) {
         legalMoves.push(String(x)+String(slidery));
+      } else if (boardState[slidery][x][0] == this.type[0]) {
+        break;
       } else {
         legalMoves.push(String(x)+String(slidery));
         break;
@@ -762,84 +737,91 @@ class Queen extends Piece {
 
 
 class King extends Piece {
-  constructor(type, oldPosition, newPosition) {
-    super(type, oldPosition, newPosition);
+  constructor(type, positions) {
+    super(type, positions);
   }
 
   findLegalMoves() {
-    const x = Number(this.newPosition[0]);
-    const y = Number(this.newPosition[1]);
+
+    const x = Number(this.positions[num][0]);
+    const y = Number(this.positions[num][1]);
 
     let legalMoves = [];
 
     // x+1 , y
     if (x+1 <= 7) {
-      if (boardState[y][x+1][0] == '0' || boardState[y][x+1][0] != this.type[0]) {
+      if (!boardState[y][x+1] || boardState[y][x+1][0] != this.type[0]) {
         legalMoves.push(String(x+1)+String(y));
       }
     }
 
     // x+1 , y+1
     if (x+1 <= 7 && y+1 <= 7) {
-      if (boardState[y+1][x+1][0] == '0' || boardState[y+1][x+1][0] != this.type[0]) {
+      if (!boardState[y+1][x+1] || boardState[y+1][x+1][0] != this.type[0]) {
         legalMoves.push(String(x+1)+String(y+1));
       }
     }
 
     // x , y+1
     if (y+1 <= 7) {
-      if (boardState[y+1][x][0] == '0' || boardState[y+1][x][0] != this.type[0]) {
+      if (!boardState[y+1][x] || boardState[y+1][x][0] != this.type[0]) {
         legalMoves.push(String(x)+String(y+1));
       }
     }
 
     // x-1 , y
     if (x-1 >= 0) {
-      if (boardState[y][x-1][0] == '0' || boardState[y][x-1][0] != this.type[0]) {
+      if (!boardState[y][x-1] || boardState[y][x-1][0] != this.type[0]) {
         legalMoves.push(String(x-1)+String(y));
       }
     }
 
     // x-1 , y-1
     if (x-1 >= 0 && y-1 >= 0) {
-      if (boardState[y-1][x-1][0] == '0' || boardState[y-1][x-1][0] != this.type[0]) {
+      if (!boardState[y-1][x-1] || boardState[y-1][x-1][0] != this.type[0]) {
         legalMoves.push(String(x-1)+String(y-1));
       }
     }
 
     // x , y-1
     if (y-1 >= 0) {
-      if (boardState[y-1][x][0] == '0' || boardState[y-1][x][0] != this.type[0]) {
+      if (!boardState[y-1][x] || boardState[y-1][x][0] != this.type[0]) {
         legalMoves.push(String(x)+String(y-1));
       }
     }
 
     // x+1 , y-1
     if (x+1 <= 7 && y-1 >= 0) {
-      if (boardState[y-1][x+1][0] == '0' || boardState[y-1][x+1][0] != this.type[0]) {
+      if (!boardState[y-1][x+1] || boardState[y-1][x+1][0] != this.type[0]) {
         legalMoves.push(String(x+1)+String(y-1));
       }
     }
 
     // x-1 , y+1
     if (x-1 >= 0 && y+1 <= 7) {
-      if (boardState[y+1][x-1][0] == '0' || boardState[y+1][x-1][0] != this.type[0]) {
+      if (!boardState[y+1][x-1] || boardState[y+1][x-1][0] != this.type[0]) {
         legalMoves.push(String(x-1)+String(y+1));
       }
     }
 
-    // short castle
-    if (!this.hasMoved && boardState[y][x+1] == '0' && boardState[y][x+2] == '0' && 
-      (pieceObjects[y][x+3] != '0' && pieceObjects[y][x+3].hasMoved == 0) &&
+    // castling
+    if (!this.hasMoved[0] || this.hasMoved[1] <= num) {
+      // short castle
+      if (!boardState[y][x+1] && !boardState[y][x+2] && 
+      pieceAtPosition(x+3,y) && 
+      (!pieceAtPosition(x+3,y).hasMoved[0] || pieceAtPosition(x+3,y).hasMoved[1] <= num) &&
       !isSqrInCheck(this.type,x,y,boardState) && !isSqrInCheck(this.type,x+1,y,boardState) && !isSqrInCheck(this.type,x+2,y,boardState)) {
-      legalMoves.push(String(x+2)+String(y));
-    }
+        legalMoves.push(String(x+2)+String(y));
+      }
 
-    // long castle
-    if (!this.hasMoved && boardState[y][x-1] == '0' && boardState[y][x-2] == '0' && boardState[y][x-3] == '0' &&
-      (pieceObjects[y][x-4] != '0' && pieceObjects[y][x-4].hasMoved == 0) &&
-      !isSqrInCheck(this.type,x,y,boardState) && !isSqrInCheck(this.type,x+1,y,boardState) && !isSqrInCheck(this.type,x+2,y,boardState)) {
-      legalMoves.push(String(x-2)+String(y));
+      // long castle
+      if (!boardState[y][x-1] && !boardState[y][x-2] && !boardState[y][x-3] && 
+      pieceAtPosition(x-4,y) && 
+      (!pieceAtPosition(x-4,y).hasMoved[0] || pieceAtPosition(x-4,y).hasMoved[1] <= num) &&
+      !isSqrInCheck(this.type,x,y,boardState) && !isSqrInCheck(this.type,x-1,y,boardState) && !isSqrInCheck(this.type,x-2,y,boardState)) {
+        legalMoves.push(String(x-2)+String(y));
+      }
+
     }
 
     legalMoves = moveFiltering(x,y,legalMoves);
