@@ -301,6 +301,7 @@ class Pawn extends Piece {
       if (!boardState[y+dir][x]) {
         legalMoves.push(String(x)+String(y+dir));
         if (!boardState[y+2*dir][x]) {
+          //console.log('here');
           legalMoves.push(String(x)+String(y+2*dir));
         }
       }
