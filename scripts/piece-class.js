@@ -804,13 +804,13 @@ class King extends Piece {
         legalMoves.push(String(x-1)+String(y+1));
       }
     }
-
+    
     // castling
-    if (!this.hasMoved[0] || this.hasMoved[1] <= num) {
+    if (!this.hasMoved[0] || this.hasMoved[1] >= num) {
       // short castle
       if (!boardState[y][x+1] && !boardState[y][x+2] && 
       pieceAtPosition(x+3,y) && 
-      (!pieceAtPosition(x+3,y).hasMoved[0] || pieceAtPosition(x+3,y).hasMoved[1] <= num) &&
+      (!pieceAtPosition(x+3,y).hasMoved[0] || pieceAtPosition(x+3,y).hasMoved[1] >= num) &&
       !isSqrInCheck(this.type,x,y,boardState) && !isSqrInCheck(this.type,x+1,y,boardState) && !isSqrInCheck(this.type,x+2,y,boardState)) {
         legalMoves.push(String(x+2)+String(y));
       }
@@ -818,7 +818,7 @@ class King extends Piece {
       // long castle
       if (!boardState[y][x-1] && !boardState[y][x-2] && !boardState[y][x-3] && 
       pieceAtPosition(x-4,y) && 
-      (!pieceAtPosition(x-4,y).hasMoved[0] || pieceAtPosition(x-4,y).hasMoved[1] <= num) &&
+      (!pieceAtPosition(x-4,y).hasMoved[0] || pieceAtPosition(x-4,y).hasMoved[1] >= num) &&
       !isSqrInCheck(this.type,x,y,boardState) && !isSqrInCheck(this.type,x-1,y,boardState) && !isSqrInCheck(this.type,x-2,y,boardState)) {
         legalMoves.push(String(x-2)+String(y));
       }

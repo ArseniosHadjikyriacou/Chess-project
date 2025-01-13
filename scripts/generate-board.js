@@ -84,21 +84,4 @@ boardHTML = boardHTML.slice(0,h8+11) + 'js-sqr-h8 ' + boardHTML.slice(h8+11);
 
 boardElement.innerHTML = boardHTML;
 
-
-document.querySelector('.js-sqr-a1').innerHTML = `<div class="text-a1">a</div>`;
-document.querySelector('.js-sqr-b1').innerHTML = `<div class="text-b1">b</div>`;
-document.querySelector('.js-sqr-c1').innerHTML = `<div class="text-c1">c</div>`;
-document.querySelector('.js-sqr-d1').innerHTML = `<div class="text-d1">d</div>`;
-document.querySelector('.js-sqr-e1').innerHTML = `<div class="text-e1">e</div>`;
-document.querySelector('.js-sqr-f1').innerHTML = `<div class="text-f1">f</div>`;
-document.querySelector('.js-sqr-g1').innerHTML = `<div class="text-g1">g</div>`;
-document.querySelector('.js-sqr-h1').innerHTML = `<div class="text-h1">h</div>`;
-document.querySelector('.js-sqr-h1').innerHTML += ` <div class="text-h1n">1</div>`;
-
-document.querySelector('.js-sqr-h2').innerHTML = `<p class="text-h2">2</p>`;
-document.querySelector('.js-sqr-h3').innerHTML = `<p class="text-h3">3</p>`;
-document.querySelector('.js-sqr-h4').innerHTML = `<p class="text-h4">4</p>`;
-document.querySelector('.js-sqr-h5').innerHTML = `<p class="text-h5">5</p>`;
-document.querySelector('.js-sqr-h6').innerHTML = `<p class="text-h6">6</p>`;
-document.querySelector('.js-sqr-h7').innerHTML = `<p class="text-h7">7</p>`;
-document.querySelector('.js-sqr-h8').innerHTML = `<p class="text-h8">8</p>`;
+boardCoordinates();
