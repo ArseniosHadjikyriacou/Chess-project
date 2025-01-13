@@ -82,9 +82,11 @@ const clearBoard = function () {
 
   // remove current piece images and piece click functions
   pieces.forEach( piece => {
-    const sqrElement = document.querySelector('.js-sqr'+piece.positions[num]);
-    sqrElement.innerHTML = '';
-    sqrElement.removeEventListener('click',piece.clickOnPiece);
+    if (piece.positions[num]) {
+      const sqrElement = document.querySelector('.js-sqr'+piece.positions[num]);
+      sqrElement.innerHTML = '';
+      sqrElement.removeEventListener('click',piece.clickOnPiece);
+    }
   }
   );
 
@@ -114,8 +116,10 @@ const updateBoardState = function () {
   pieces.forEach( piece => {
 
     if (!piece.wasCaptured[0] || piece.wasCaptured[1] >= num) {
-      piece.placePiece();
-      board[Number(piece.positions[num][1])][Number(piece.positions[num][0])] = piece.type;
+      if (piece.positions[num]) {
+        piece.placePiece();
+        board[Number(piece.positions[num][1])][Number(piece.positions[num][0])] = piece.type;
+      }
     }
 
   }

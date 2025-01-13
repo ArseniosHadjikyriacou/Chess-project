@@ -33,9 +33,6 @@ const clickToMove = function (event,piece) {
           p.doublePush = [0,0];
         }
       }
-      if (p.createdAt > num+1) {
-        promIndex = index;
-      }
     }
     );
 
