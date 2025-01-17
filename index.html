@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCid html>
 
 <html>
   
@@ -13,6 +13,17 @@
 
   <body>
 
+    <div class="moveColor-reminder-container">
+      <div class="moveColor-reminder moveColor-reminder-w js-moveColor-reminder js-moveColor-reminder">
+        White to move
+      </div>
+    </div>
+
+    <div class="board-container">
+      <div class="board js-board">
+      </div>
+    </div>
+
     <div class="move-buttons">
       <button class="backward js-backward"> 
         &lt 
@@ -22,32 +33,20 @@
         &gt 
       </button>
     </div>
-
-    <div class="board-container">
-      <div class="board js-board">
-      </div>
-    </div>
-
-
-    <div class="turn-reminder-container">
-      <div class="turn-reminder turn-reminder-w js-turn-reminder js-turn-reminder">
-        White to move
-      </div>
-    </div>
     
 
-    <script src="scripts/global-variables.js"></script>
+    <!-- generate board squares in CSS grid -->
+    <script src="scripts/utils/generate-board.js"></script>
 
-    <script src="scripts/piece-class.js"></script>
+    <!-- add global functions to the namespace -->
+    <script src="scripts/utils/click-functions.js"></script>
+    <script src="scripts/utils/legal-move-filtering.js"></script>
+    <script src="scripts/utils/rewind.js"></script>
+    <script src="scripts/utils/piece-class.js"></script>
 
-    <script src="scripts/generate-board.js"></script>
-    <script src="scripts/generate-pieces.js"></script>
-
-    <script src="scripts/legal-move-filtering.js"></script>
-    <script src="scripts/click-functions.js"></script>
-    <script src="scripts/rewind.js"></script>
+    <!-- generating starting piece objects and play! -->
+    <script src="scripts/play-chess.js"></script>
     
-
   </body>
 
 </html>

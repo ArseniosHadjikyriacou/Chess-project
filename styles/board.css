@@ -48,16 +48,32 @@
   background-color: rgb(123, 222, 155);
 }
 
+.js-sqrw-legal:hover{
+  background-color: rgba(123, 222, 154, 0.8);
+}
+
 .js-sqrb-legal{
   background-color: rgb(20, 164, 65);
+}
+
+.js-sqrb-legal:hover{
+  background-color: rgba(20, 164, 66, 0.8);
 }
 
 .js-sqrw-clicked{
   background-color: rgb(236, 117, 117);
 }
 
+.js-sqrw-clicked:hover{
+  background-color: rgba(236, 117, 117, 0.8);
+}
+
 .js-sqrb-clicked{
   background-color: rgb(190, 81, 81);
+}
+
+.js-sqrb-clicked:hover{
+  background-color: rgba(190, 81, 81, 0.8);
 }
 
 .text-a1,.text-b1,.text-c1,.text-d1,.text-e1,.text-f1,.text-h1 {
