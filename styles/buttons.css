@@ -1,4 +1,4 @@
-.move-buttons{
+.move-buttons-container{
   display: flex;
   gap: 1vmin;
   justify-content: center;
@@ -17,10 +17,31 @@
   border-radius: 1.5vmin;
 }
 
-.backward:hover,.forward:hover{
+.backward:hover,.forward:hover,.reset:hover{
   background-color: rgba(232, 220, 195, 0.8);
 }
 
-.backward:active,.forward:active{
+.backward:active,.forward:active,.reset:active{
   background-color: rgb(190, 150, 103);
+}
+
+.reset-button-container{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.reset{
+  height: 6vmin;
+  width: 20vmin;
+  font-size: 5vmin;
+  font-weight: 600;
+  text-align: center;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin-top: 0px;
+  line-height: 0px;
+  background-color: rgb(232, 220, 195);
+  transition-duration: 0.15s;
+  border-radius: 1.5vmin;
 }

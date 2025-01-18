@@ -16,9 +16,10 @@ let coloredSqrs;
 coloredSqrs = [];
 
 
-/* Add event listeners to backward and forward buttons */
+/* Add event listeners to backward, forward and reset buttons */
 document.querySelector('.js-backward').addEventListener('click',clickMinusMove);
 document.querySelector('.js-forward').addEventListener('click',clickPlusMove);
+document.querySelector('.js-reset').addEventListener('click',clickReset);
 /* -------------------------------------------------------------------- */
 
 
