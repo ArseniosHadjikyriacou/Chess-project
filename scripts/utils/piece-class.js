@@ -16,7 +16,7 @@ class Pieces {
     this.captured = [0,0];
     this.created = -1;
     this.imgHTML = `<img class="piece js-piece-${this.id}" src="svg-pieces/${this.id.slice(0,2)}.svg">`
-    this.clickOnPiece = () => clickOnPiece(this);
+    this.clickOnPiece = () => this.findLegalMoves();
     this.clickToMove = (event) => clickToMove(event,this);
   }
 
@@ -33,6 +33,30 @@ class Pieces {
     });
 
     return board;
+  }
+
+  static clearBoard() {
+    // remove current piece images
+    // automatically removes the clickOnPiece event listeners attatched to the images
+    piecesArray.forEach( piece => {
+      if (document.querySelector('.js-piece-'+piece.id)) {
+        document.querySelector('.js-piece-'+piece.id).remove();
+      }
+    });
+  
+    // remove highlighted squares
+    if (coloredSqrs.length) {
+      const sqrElementOld = document.querySelector('.js-sqr-'+coloredSqrs[0]);
+      sqrElementOld.classList.remove('js-sqrw-clicked','js-sqrb-clicked');
+      
+      coloredSqrs[1].forEach( xy => {
+        const sqrElementLegal = document.querySelector('.js-sqr-'+xy);
+        sqrElementLegal.removeEventListener('click',coloredSqrs[2]);
+        sqrElementLegal.classList.remove('js-sqrw-legal','js-sqrb-legal');
+      });
+      coloredSqrs = [];
+    }
+  
   }
 
   static extendPositions() {
@@ -67,8 +91,6 @@ class Pieces {
     const imgElement = document.querySelector(`.js-piece-${this.id}`);
     if (this.id[0] === moveColor) {
       imgElement.addEventListener('click',this.clickOnPiece);
-    } else {
-      imgElement.removeEventListener('click',this.clickOnPiece);
     }
   }
 
@@ -142,7 +164,7 @@ class Pieces {
     }
 
     changeColor();
-    clearBoard();
+    Pieces.clearBoard();
 
     // add new position to moved piece and extend the positions array for all other pieces
     if (this.id[1] != 'P' || (newPos[1] != '0' && newPos[1] != '7')) {
