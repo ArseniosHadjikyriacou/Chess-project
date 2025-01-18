@@ -20,9 +20,58 @@ class Pieces {
     this.clickToMove = (event) => clickToMove(event,this);
   }
 
+  static setToLocalStorage() {
+    localStorage.setItem('moveNumber', JSON.stringify(moveNum));
+    localStorage.setItem('moveColor', JSON.stringify(moveColor));
+    localStorage.setItem('newQueens', JSON.stringify(newQueens));
+    localStorage.setItem('piecesArray', JSON.stringify(piecesArray));
+  }
+
+  static getFromLocalStorage() {
+    piecesArray = [];
+    moveNum = JSON.parse(localStorage.getItem('moveNumber'));
+    moveColor = JSON.parse(localStorage.getItem('moveColor'));
+    newQueens = JSON.parse(localStorage.getItem('newQueens'));
+    const pieceAttributes = JSON.parse(localStorage.getItem('piecesArray'));
+    pieceAttributes.forEach(piece => {
+      if (piece.id[1] === "P") {
+        const pawnObject = new Pawn(piece.id,piece.positions);
+        pawnObject.moved = piece.moved;
+        piecesArray.push(pawnObject);
+        pawnObject.captured = piece.captured;
+        pawnObject.doublePush = piece.doublePush;
+      } else if (piece.id[1] === "R") {
+        const rookObject = new Rook(piece.id,piece.positions);
+        piecesArray.push(rookObject);
+        rookObject.moved = piece.moved;
+        rookObject.captured = piece.captured;
+      } else if (piece.id[1] === "N") {
+        const knightObject = new Knight(piece.id,piece.positions);
+        piecesArray.push(knightObject);
+        knightObject.moved = piece.moved;
+        knightObject.captured = piece.captured;
+      } else if (piece.id[1] === "B") {
+        const bishopObject = new Bishop(piece.id,piece.positions);
+        piecesArray.push(bishopObject);
+        bishopObject.moved = piece.moved;
+        bishopObject.captured = piece.captured;
+      } else if (piece.id[1] === "Q") {
+        const queenObject = new Queen(piece.id,piece.positions);
+        piecesArray.push(queenObject);
+        queenObject.moved = piece.moved;
+        queenObject.captured = piece.captured;
+        queenObject.created = piece.created;
+      } else if (piece.id[1] === "K") {
+        const kingObject = new King(piece.id,piece.positions);
+        piecesArray.push(kingObject);
+        kingObject.moved = piece.moved;
+        kingObject.captured = piece.captured;
+      } 
+    });
+  }
+
   static updateBoardState() {
     let board = Array(8).fill().map(() => Array(8).fill(0));
-
     piecesArray.forEach( piece => {
       if (!piece.captured[0] || piece.captured[1] >= moveNum) {
         if ( piece.id[1] != 'Q' || (piece.id[1] === 'Q' && piece.created < moveNum) ) {
@@ -31,13 +80,13 @@ class Pieces {
         }
       }
     });
-
+    Pieces.setToLocalStorage();
     return board;
   }
 
   static clearBoard() {
     // remove current piece images
-    // automatically removes the clickOnPiece event listeners attatched to the images
+    // automatically removes the clickOnPiece event listeners attached to the images
     piecesArray.forEach( piece => {
       if (document.querySelector('.js-piece-'+piece.id)) {
         document.querySelector('.js-piece-'+piece.id).remove();
