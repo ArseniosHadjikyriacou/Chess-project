@@ -1,8 +1,25 @@
+.action-buttons-container{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2vmin;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.buttons-container{
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 1fr);
+  justify-content: right;
+  grid-gap: 1vmin;
+  margin-right: 0;
+}
+
 .move-buttons-container{
   display: flex;
   gap: 1vmin;
   justify-content: center;
-  margin-top: 10px;
+  align-items: center;
 }
 
 .backward,.forward{
@@ -28,11 +45,11 @@
 .reset-button-container{
   display: flex;
   justify-content: center;
-  margin-top: 10px;
+  align-items: center;
 }
 
 .reset{
-  height: 6vmin;
+  height: 7vmin;
   width: 20vmin;
   font-size: 5vmin;
   font-weight: 600;
@@ -44,4 +61,25 @@
   background-color: rgb(232, 220, 195);
   transition-duration: 0.15s;
   border-radius: 1.5vmin;
+}
+
+#radio-analysis,#radio-computer {
+  height: 6vmin; 
+  width: 6vmin;
+  margin: 1vmin;
+  accent-color: rgb(232, 220, 195);
+}
+
+.select-radio-container label {
+  display: inline-block;
+  line-height: 50px;
+  white-space: nowrap;
+  color: rgb(232, 220, 195);
+  font-size: 4vmin;
+}
+.select-radio-container input {
+  vertical-align: middle;
+}
+.select-radio-container label span {
+  vertical-align: middle;
 }

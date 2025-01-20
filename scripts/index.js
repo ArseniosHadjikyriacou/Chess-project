@@ -5,6 +5,40 @@ let newQueens;   // number of new queens
 let piecesArray; // stores created piece objects
 let boardState;  // 8x8 array to store the state of the board
 
+/* const wP1 = new Pawn("wP1",["06"]);
+const wP2 = new Pawn("wP2",["16"]);
+const wP3 = new Pawn("wP3",["26"]);
+const wP4 = new Pawn("wP4",["36"]);
+const wP5 = new Pawn("wP5",["46"]);
+const wP6 = new Pawn("wP6",["56"]);
+const wP7 = new Pawn("wP7",["66"]);
+const wP8 = new Pawn("wP8",["76"]);
+const wR1 = new Rook("wR1",["07"]);
+const wR2 = new Rook("wR2",["77"]);
+const wN1 = new Knight("wN1",["17"]);
+const wN2 = new Knight("wN2",["67"]);
+const wB1 = new Bishop("wB1",["27"]);
+const wB2 = new Bishop("wB2",["57"]);
+const wQ = new Queen("wQ",["37"]);
+const wK = new King("wK",["47"])
+
+const bP1 = new Pawn("bP1",["01"]);
+const bP2 = new Pawn("bP2",["11"]);
+const bP3 = new Pawn("bP3",["21"]);
+const bP4 = new Pawn("bP4",["31"]);
+const bP5 = new Pawn("bP5",["41"]);
+const bP6 = new Pawn("bP6",["51"]);
+const bP7 = new Pawn("bP7",["61"]);
+const bP8 = new Pawn("bP8",["71"]);
+const bR1 = new Rook("bR1",["00"]);
+const bR2 = new Rook("bR2",["70"]);
+const bN1 = new Knight("bN1",["10"]);
+const bN2 = new Knight("bN2",["60"]);
+const bB1 = new Bishop("bB1",["20"]);
+const bB2 = new Bishop("bB2",["50"]);
+const bQ = new Queen("bQ",["30"]);
+const bK = new King("bK",["40"]); */
+
 /* 
 coloredSqrs contains three elements:
 1) the position of the last piece that was clicked, 
@@ -20,6 +54,12 @@ coloredSqrs = [];
 document.querySelector('.js-backward').addEventListener('click',clickMinusMove);
 document.querySelector('.js-forward').addEventListener('click',clickPlusMove);
 document.querySelector('.js-reset').addEventListener('click',clickReset);
+/* -------------------------------------------------------------------- */
+
+
+/* Handle transition from analysis board to engine backend and vice-versa */
+const buttonAnalysis = document.getElementById("radio-analysis")
+const buttonComputer = document.getElementById("radio-computer")
 /* -------------------------------------------------------------------- */
 
 
@@ -63,3 +103,19 @@ if (JSON.parse(localStorage.getItem('moveNumber'))) {
 
 // generate boardState array and place svg images on the html board  
 boardState = Pieces.updateBoardState();
+
+
+/* document.querySelector(".select-radio-container").addEventListener('change',() => {
+  
+}); */
+
+
+/* console.log("Hello, world!");
+console.log(buttonAnalysis.checked);
+console.log(buttonComputer.checked);
+if (buttonComputer.checked) {
+  buttonAnalysis.checked = true;
+  buttonComputer.checked = false;
+}
+console.log(buttonAnalysis.checked);
+console.log(buttonComputer.checked); */

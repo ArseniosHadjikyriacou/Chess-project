@@ -139,7 +139,9 @@ class Pieces {
 
     const imgElement = document.querySelector(`.js-piece-${this.id}`);
     if (this.id[0] === moveColor) {
-      imgElement.addEventListener('click',this.clickOnPiece);
+      if (moveColor === 'w' || buttonAnalysis.checked) {
+        imgElement.addEventListener('click',this.clickOnPiece);
+      }
     }
   }
 
@@ -223,6 +225,10 @@ class Pieces {
 
     moveNum += 1;
     boardState = Pieces.updateBoardState();
+
+    if (buttonComputer.checked && moveColor === 'b') {
+      generateComputerMove();
+    }
     
   }
 

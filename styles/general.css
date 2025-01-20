@@ -4,14 +4,6 @@ body{
   background-color: rgb(35, 35, 35);
 }
 
-.board-container{
-  width: 80vmin;
-  height: 80vmin;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-}
-
 .moveColor-reminder-container{
   padding: 0;
   margin: 0;
@@ -28,7 +20,7 @@ body{
   padding-top: 2px;
   padding-bottom: 2px;
   margin-top: 0px;
-  width: 80vmin;
+  width: 70vmin;
   border-radius: 7px;
 }
 

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles/general.css" />
     <link rel="stylesheet" href="styles/board.css" />
     <link rel="stylesheet" href="styles/pieces.css" />
-    <link rel="stylesheet" href="styles/buttons.css" />
+    <link rel="stylesheet" href="styles/actions.css" />
   </head>
 
   <body>
@@ -24,22 +24,41 @@
       </div>
     </div>
 
-    <div class="move-buttons-container">
-      <button class="backward js-backward"> 
-        &lt 
-      </button>
-  
-      <button class="forward js-forward"> 
-        &gt 
-      </button>
+
+    <div class="action-buttons-container">
+
+      <div class="buttons-container">
+
+        <div class="move-buttons-container">
+          <button class="backward js-backward"> 
+            &lt 
+          </button>
+          <button class="forward js-forward"> 
+            &gt 
+          </button>
+        </div>
+
+        <div class="reset-button-container">
+          <button class="reset js-reset">
+            Reset 
+          </button>
+        </div>
+
+      </div>
+
+      <div class="select-radio-container">
+        <label>
+          <input type="radio" id="radio-analysis" name="mode-selector" checked><span>Analysis</span>
+        </label><br/>
+        <label>
+          <input type="radio" id="radio-computer" name="mode-selector"><span>Computer</span>
+        </label>
+      </div>
+
+
     </div>
 
-    <div class="reset-button-container">
-      <button class="reset js-reset">
-        Reset 
-      </button>
-    </div>
-    
+
 
     <!-- generate board squares in CSS grid -->
     <script src="scripts/utils/generate-board.js"></script>
@@ -47,6 +66,7 @@
     <!-- add global functions to the namespace -->
     <script src="scripts/utils/click-functions.js"></script>
     <script src="scripts/utils/legal-move-filtering.js"></script>
+    <script src="scripts/utils/online-chess-engine.js"></script>
     <script src="scripts/utils/piece-class.js"></script>
 
     <!-- generating starting piece objects and play! -->
