@@ -1,1 +1,1 @@
-A simple chess analysis board!
+A simple chess app made using vanilla Javascript. Analyze or play against another player or a stockfish API at https://chess-api.com/. A deployed version of this app can be found at: https://arsenioshadjikyriacou.github.io/Chess-project/

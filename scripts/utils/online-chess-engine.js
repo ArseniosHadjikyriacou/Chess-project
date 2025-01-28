@@ -11,7 +11,7 @@ async function postChessApi(data = {}) {
 }
 
 const generateComputerMove = function() {
-  
+  // note: online API does not accept en-passant information in fes format :(
   postChessApi({ fen: fesNotation(boardState) }).then((data) => {
     
     const oldSqr = lettersToNumbers(data.from);
@@ -104,6 +104,7 @@ const fesNotation = function(board) {
   }
 
   let enPassant = ' - 0 ';
+  // note: online API does not accept en-passant information in fes format :(
   /* piecesArray.forEach(element => {
     if (element.id[1] === 'P') {
       let dir = 0;
